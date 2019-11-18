@@ -9,11 +9,10 @@ import os
 import threading
 import traceback
 
-import rethinkdb as r
 from flask import Flask, render_template, request, g, jsonify, make_response
 
 from dashboard import dash
-from utils.db import get_db, get_redis
+from utils.db import db, get_redis
 from utils.ratelimits import ratelimit, endpoint_ratelimit
 from utils.exceptions import BadRequest
 
@@ -60,19 +59,17 @@ def init_app():
 
 def require_authorization(func):
     def wrapper(*args, **kwargs):
-        if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(get_db()):
+        if db.is_key_valid(request.headers.get('authorization', '')):
             return func(*args, **kwargs)
 
         return jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}), 401
-
     return wrapper
 
 
 @app.teardown_appcontext
 def close_db(error):
     """Closes the database again at the end of the request."""
-    if hasattr(g, 'rdb'):
-        g.rdb.close()
+    db.close()
 
 
 @app.route('/')
@@ -107,6 +104,7 @@ def docs():
 def api(endpoint):
     if endpoint not in endpoints:
         return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404
+
     if request.method == 'GET':
         text = request.args.get('text', '')
         avatars = [x for x in [request.args.get('avatar1', request.args.get('image', None)),

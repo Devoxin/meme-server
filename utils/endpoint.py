@@ -4,7 +4,7 @@ from time import perf_counter
 import rethinkdb as r
 
 from utils import fixedlist
-from utils.db import get_db, get_redis
+from utils.db import db, get_redis
 from .asset_cache import AssetCache
 from utils.ratelimits import RatelimitCache
 
@@ -43,12 +43,14 @@ class Endpoint(ABC):
         res = self.generate(**kwargs)
         t = round((perf_counter() - start) * 1000, 2)  # Time in ms, formatted to 2dp
         self.avg_generation_times.append(t)
-        k = r.table('keys').get(key).run(get_db())
+        k = db.get_key(key)
         usage = k['usages'].get(self.name, 0) + 1
-        r.table('keys').get(key) \
-            .update({"total_usage": k['total_usage'] + 1,
-                     "usages": {self.name: usage}}) \
-            .run(get_db())
+        db.update_key_data(key, {
+            "total_usage": k['total_usage'] + 1,
+            "usages": {
+                self.name: usage
+            }
+        })
         return res
 
     @abstractmethod

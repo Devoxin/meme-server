@@ -8,7 +8,7 @@ import requests
 import rethinkdb as r
 from flask import request, make_response, jsonify
 
-from utils.db import get_db, get_redis
+from utils.db import db, get_redis
 
 config = json.load(open('config.json'))
 
@@ -80,8 +80,8 @@ globalcache = RatelimitCache(expire_time=timedelta(0, 60, 0))
 
 def ratelimit(func, cache=globalcache, max_usage=300):
     def wrapper(*args, **kwargs):
-        auth = request.headers.get('authorization', None)
-        key = r.table('keys').get(auth).run(get_db())
+        auth = request.headers.get('authorization', '')
+        key = db.get_key(auth)
         if key['unlimited']:
             return make_response(
                 (*func(*args, **kwargs), {'X-Global-RateLimit-Limit': 'Unlimited',
@@ -100,7 +100,9 @@ def ratelimit(func, cache=globalcache, max_usage=300):
                     return func(*args, **kwargs)
             else:
                 ratelimit_reached = key.get('ratelimit_reached', 0) + 1
-                r.table('keys').get(auth).update({"ratelimit_reached": ratelimit_reached}).run(get_db())
+                db.update_key_data(auth, {
+                    'ratelimit_reached': ratelimit_reached
+                })
                 if ratelimit_reached % 5 == 0 and 'webhook_url' in config:
                     requests.post(config['webhook_url'],
                                   json={"embeds": [{
@@ -125,7 +127,7 @@ def ratelimit(func, cache=globalcache, max_usage=300):
 
 
 def endpoint_ratelimit(auth, cache=globalcache, max_usage=5):
-    key = r.table('keys').get(auth).run(get_db())
+    key = db.get_key(auth)
     if key['unlimited']:
         return {'X-RateLimit-Limit': 'Unlimited',
                                      'X-RateLimit-Remaining': 'Unlimited',
@@ -139,7 +141,9 @@ def endpoint_ratelimit(auth, cache=globalcache, max_usage=5):
                     'X-RateLimit-Reset': cache.expires_at(key['id'])}
         else:
             ratelimit_reached = key.get('ratelimit_reached', 0) + 1
-            r.table('keys').get(auth).update({"ratelimit_reached": ratelimit_reached}).run(get_db())
+            db.update_key_data(auth, {
+                'ratelimit_reached': ratelimit_reached
+            })
             if ratelimit_reached % 5 == 0 and 'webhook_url' in config:
                 requests.post(config['webhook_url'],
                               json={"embeds": [{
