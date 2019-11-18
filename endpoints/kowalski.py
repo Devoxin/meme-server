@@ -29,7 +29,7 @@ class Kowalski(Endpoint):
 
             return response
         clip = VideoFileClip("assets/kowalski/kowalski.gif")
-        text = TextClip(text, fontsize=36, method='caption', size=(245, None), align='West',  color='black',
+        text = TextClip(text, fontsize=36, method='caption', size=(245, None), align='West', color='black',
                         stroke_color='black', stroke_width=1,
                         font='Verdana').set_duration(clip.duration)
         text = text.set_position((340, 65)).set_duration(clip.duration)

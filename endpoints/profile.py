@@ -11,9 +11,11 @@ from utils.textutils import wrap, render_text_with_emoji
 @setup
 class Profile(Endpoint):
     """Note: This endpoint is only accessible to Dank Memer. Do NOT implement this!"""
-    params = ['avatar0', 'username1', 'image', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
+    params = ['avatar0', 'username1', 'image', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige',
+              'active_effects', 'command', 'streak', 'multiplier']
 
     def generate(self, avatars, text, usernames, kwargs):
+        # pylint: disable=R0915
         font = self.assets.get_font('assets/fonts/MontserratBold.ttf', size=30, )
         font2 = self.assets.get_font('assets/fonts/Montserrat.ttf', size=22, )
         font3 = self.assets.get_font('assets/fonts/MontserratBold.ttf', size=30, )
@@ -112,7 +114,8 @@ class Profile(Endpoint):
             title_text = draw.textsize(title, font=font2)
             title_box = Image.new('RGBA', (title_text[0] + 20, title_text[1] + 20), (0, 0, 0, 230))
             base.paste(title_box, (0, 20 + name_box.height + bio_box.height + 60), title_box)
-            render_text_with_emoji(title_box, draw, (10, bio_box.height + name_box.height + title_box.height + 46), title, font=font2, fill=(0, 256, 0))
+            render_text_with_emoji(title_box, draw, (10, bio_box.height + name_box.height + title_box.height + 46),
+                                   title, font=font2, fill=(0, 256, 0))
 
         draw.text((15, 290), 'Level', font=font3)
 
@@ -178,7 +181,7 @@ class Profile(Endpoint):
         alpha = Image.new('L', level_bar.size, 255)
         alpha2 = Image.new('L', next_bar.size, 255)
         w, h = level_bar.size
-        w2, h2 = next_bar.size
+        _, h2 = next_bar.size
         rad = 1
         alpha.paste(circle.crop((rad, 0, rad * 2, rad)), (w - rad, 0))
         alpha.paste(circle.crop((rad, rad, rad * 2, rad * 2)), (w - rad, h - rad))

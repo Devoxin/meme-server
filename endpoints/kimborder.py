@@ -7,6 +7,7 @@ from utils import http
 from utils.endpoint import Endpoint, setup
 from utils.skew import skew
 
+
 @setup
 class Kimborder(Endpoint):
     params = ['avatar0']

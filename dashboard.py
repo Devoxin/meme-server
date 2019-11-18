@@ -89,9 +89,9 @@ def request_key():
 
         if not reason or not name or not link or not app_type or not description or not tos:
             return render_template('result.html',
-                                    result='Please make sure you have entered a name, description, '
-                                           'type, link, description and have accepted our TOS before submitting your application',
-                                    success=False)
+                                   result='Please make sure you have entered a name, description, '
+                                          'type, link, description and have accepted our TOS before submitting your application',
+                                   success=False)
 
         if not link.startswith('http'):
             return render_template('result.html', result='URL must use HTTP(S) scheme!', success=False)

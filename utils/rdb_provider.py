@@ -1,5 +1,11 @@
-from .models import DatabaseAdapter
+try:
+    import ujson as json
+except ImportError:
+    import json
+
 import rethinkdb as r
+
+from .models import DatabaseAdapter
 
 config = json.load(open('config.json'))
 

@@ -58,7 +58,6 @@ class DatabaseAdapter(object, ABC):
         """
         raise NotImplementedError
 
-
     @abstractmethod
     def get_applications_ordered_by(self, order_key: str) -> List[Dict[str, Any]]:
         """

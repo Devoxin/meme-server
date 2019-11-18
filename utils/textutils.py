@@ -5,6 +5,7 @@ import os
 # from PIL import ImageFont
 from PIL import Image, ImageFont
 
+
 def wrap(font, text, line_width):
     words = text.split()
 
@@ -55,7 +56,7 @@ def auto_text_size(text, font, desired_width, fallback_size=25, font_scalar=1):
 #     return ifont, wrap(ifont, text, container_width)
 
 
-def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: ImageFont='', fill='black'):
+def render_text_with_emoji(img, draw, coords: tuple = (0, 0), text='', font: ImageFont = '', fill='black'):
     initial_coords = coords
     emoji_size = font.getsize(text)[1]
 
@@ -149,6 +150,6 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
                 coords = (coords[0] + size[0], coords[1])
             else:
                 emoji_img = Image.open(f'assets/twemoji/{emoji}.png').convert('RGBA').resize((emoji_size, emoji_size),
-                                                                                           Image.LANCZOS)
+                                                                                             Image.LANCZOS)
                 img.paste(emoji_img, (coords[0], coords[1] + 4), emoji_img)
                 coords = (coords[0] + emoji_size + 4, coords[1])

@@ -1,6 +1,6 @@
 import os
 
-prohibit_load = ['__init__']
+prohibit_load = ['__init__', 'dream']
 
 for endpoint in os.listdir('endpoints'):
     if endpoint[:-3] in prohibit_load or not endpoint.endswith('.py'):

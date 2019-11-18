@@ -42,7 +42,7 @@ class Quote(Endpoint):
 
         timestamp_left = 230 + canvas.textsize(usernames[0], font=font_med)[0] + 20
         render_text_with_emoji(base, canvas, (timestamp_left, 90), 'Today at {}'.format(datetime.utcnow().strftime("%H:%M")), font=font_time,
-                    fill=(125, 125, 125))
+                               fill=(125, 125, 125))
 
         final = Image.alpha_composite(base, words)
         downscaled = final.resize((500, 100), Image.ANTIALIAS)

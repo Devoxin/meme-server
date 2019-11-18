@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
+from datetime import timedelta
 from time import perf_counter
-
-import rethinkdb as r
 
 from utils import fixedlist
 from utils.db import db, get_redis
-from .asset_cache import AssetCache
 from utils.ratelimits import RatelimitCache
 
-from datetime import timedelta
+from .asset_cache import AssetCache
 
 asset_cache = AssetCache()
 endpoints = {}

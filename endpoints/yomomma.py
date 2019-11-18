@@ -1,7 +1,8 @@
+from random import choice
+
 from flask import jsonify
 
 from utils.endpoint import Endpoint, setup
-from random import choice
 
 
 @setup

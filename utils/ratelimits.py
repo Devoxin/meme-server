@@ -4,9 +4,9 @@ except ImportError:
     import json
 from datetime import datetime, timedelta
 from time import time
+
 import requests
-import rethinkdb as r
-from flask import request, make_response, jsonify
+from flask import jsonify, make_response, request
 
 from utils.db import db, get_redis
 
