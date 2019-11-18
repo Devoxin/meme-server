@@ -1,11 +1,11 @@
-import uuid
 import os
-from flask import send_file, after_this_request
+import uuid
+
+from flask import after_this_request, send_file
+from moviepy.editor import CompositeVideoClip, TextClip, VideoFileClip
 
 from utils.endpoint import Endpoint, setup
 from utils.exceptions import BadRequest
-
-from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
 
 
 @setup(rate=1, per=30)
@@ -42,7 +42,9 @@ class Crab(Endpoint):
         text3 = TextClip(t[1], fontsize=48, color='white', font='Verdana')\
             .set_position(("center", 270)).set_duration(15.4)
 
-        video = CompositeVideoClip([clip, text.crossfadein(1), text2.crossfadein(1), text3.crossfadein(1)]).set_duration(15.4)
+        # pylint: disable=E1111
+        video = CompositeVideoClip([clip, text.crossfadein(1), text2.crossfadein(1), text3.crossfadein(1)]) \
+            .set_duration(15.4)
 
         video.write_videofile(name, threads=4, preset='superfast', verbose=False)
         clip.close()

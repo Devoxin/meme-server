@@ -1,11 +1,11 @@
-import uuid
 import os
-from flask import send_file, after_this_request
+import uuid
+
+from flask import after_this_request, send_file
+from moviepy.editor import CompositeVideoClip, TextClip, VideoFileClip
+from moviepy.video.fx.rotate import rotate
 
 from utils.endpoint import Endpoint, setup
-
-from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
-from moviepy.video.fx.rotate import rotate
 
 
 @setup(rate=1, per=30)
@@ -28,14 +28,14 @@ class Kowalski(Endpoint):
                 pass
 
             return response
-        clip = VideoFileClip("assets/kowalski/kowalski.gif")
-        text = TextClip(text, fontsize=36, method='caption', size=(245, None), align='West', color='black',
+        clip = VideoFileClip("assets/kowalski/kowalski.gif")  # pylint: disable=E1111
+        text = TextClip(text, fontsize=36, method='caption', size=(245, None), align='West', color='black',  # pylint: disable=E1111
                         stroke_color='black', stroke_width=1,
                         font='Verdana').set_duration(clip.duration)
         text = text.set_position((340, 65)).set_duration(clip.duration)
         text = rotate(text, angle=10, resample='bilinear')
 
-        video = CompositeVideoClip([clip, text]).set_duration(clip.duration)
+        video = CompositeVideoClip([clip, text]).set_duration(clip.duration)  # pylint: disable=E1111
 
         video.write_gif(name)
         clip.close()
