@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 
 
-class DatabaseAdapter(object, ABC):
+class DatabaseAdapter(ABC):
     @abstractmethod
     def get_key(self, key: str) -> Optional[Dict[str, Any]]:
         """
